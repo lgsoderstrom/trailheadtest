@@ -1,0 +1,43 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,forceCommunity:availableForAllPageTypes,force:lightningQuickAction">
+    <aura:attribute name="boat" type="Boat__c"/>
+    <aura:attribute name="id" type="Id"/>
+    <aura:attribute name="simpleboat" type="String"/>
+    <aura:attribute name="boatError" type="String"/>
+    <aura:attribute name="recordError" type="String"/>
+    <aura:attribute name="selectedTabId" type="Id"/>
+    <aura:handler event="c:BoatSelected" action="{!c.onBoatSelected}"/>
+    <aura:handler name="boatReviewAdded" event="c:BoatReviewAdded" action="{!c.onBoatReviewAdded}"/>
+    
+       <force:recordData aura:id="service"
+                      layoutType="FULL"
+                      recordId="{!v.id}"
+                      fields="Id,Name,Description__c,Price__c,Length__c,Contact__r.Name,
+                                  Contact__r.Email,Contact__r.HomePhone,BoatType__r.Name,Picture__c"
+                      targetError="{!v.recordError}"
+                      targetFields="{!v.boat}"
+                      mode="EDIT"
+                      recordUpdated="{!c.onRecordUpdated}"
+                      />
+   
+  <!--  <aura:if isTrue="{!v.boat == undefined}">  -->
+    <lightning:tabset variant="scoped" selectedTabId="{!v.selectedTabId}" aura:id="tabs">
+        <lightning:tab label="DETAILS">
+            <c:BoatDetail boat="{!v.boat}"/>  
+        </lightning:tab>
+        <lightning:tab id="boatreviewtab" label="REVIEWS" title="2nd tab extended title">
+            <c:BoatReviews boat="{!v.boat}"/>
+        </lightning:tab>
+        <lightning:tab label="ADD REVIEWS">
+            <c:AddBoatReview boat="{!v.boat}"/>
+        </lightning:tab>
+    </lightning:tabset>
+   <!--     </aura:if>   -->
+    <aura:if isTrue="{!not(empty(v.recordError))}">
+        <div class="recordError">
+            <ui:message title="Error" severity="error" closable="true">
+                {!v.recordError}
+            </ui:message>
+        </div>
+    </aura:if>
+	
+</aura:component>
